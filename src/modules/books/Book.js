@@ -17,6 +17,10 @@ export class Book {
 		this.#isRead = isRead;
 	}
 
+	getId() {
+		return this.#id;
+	}
+
 	getTitle() {
 		return this.#title;
 	}
