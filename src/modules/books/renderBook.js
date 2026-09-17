@@ -70,7 +70,7 @@ export function renderBook(book) {
 
 		<div class="col-2 text-end">
 			<div class="actions">
-				<button class="btn btn-sm btn-outline-dark edit">Edit</button>
+				<button class="btn btn-sm btn-outline-dark edit" data-bs-toggle="modal" data-bs-target="#editBookModal">Edit</button>
 				<button class="btn btn-sm btn-outline-danger delete">Delete</button>
 			</div>
 		</div>

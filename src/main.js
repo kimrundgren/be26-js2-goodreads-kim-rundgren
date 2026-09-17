@@ -74,4 +74,17 @@ bookList.addEventListener("click", event => {
 			})
 			.catch(error => console.log(error));
 	}
+
+	if (event.target.classList.contains("edit")) {
+		const li = event.target.closest("li");
+		const id = li.dataset.id;
+
+		const book = books.find(book => book.getId() === id);
+
+		// hämta readonlyfält, lägg till values med getters
+		editBookTitle.value = book.getTitle();
+		editBookAuthor.value = book.getAuthor();
+		editBookYear.value = book.getYear();
+		editBookCover.value = book.getCover();
+	}
 });

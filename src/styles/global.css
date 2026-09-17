@@ -48,8 +48,13 @@ label {
 	font-size: 0.875rem;
 	margin-bottom: 0.25rem;
 }
+
 .form-group {
 	margin-bottom: 1rem;
+}
+
+:read-only.form-control-plaintext {
+	padding: 0;
 }
 
 /* Modals */
