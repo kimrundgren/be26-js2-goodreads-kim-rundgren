@@ -1,0 +1,19 @@
+/* Status */
+.badge-status {
+	border-radius: 50px;
+	padding: 6px 10px;
+}
+
+.read {
+	background-color: var(--green);
+}
+
+.not-read {
+	background-color: var(--red);
+}
+
+/* Actions */
+.actions {
+	display: inline-flex;
+	gap: 8px;
+}

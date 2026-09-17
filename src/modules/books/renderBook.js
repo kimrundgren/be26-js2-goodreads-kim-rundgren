@@ -1,3 +1,5 @@
+import "./books.css";
+
 function renderScore(score) {
 	if (score === 0) {
 		return "☆☆☆☆☆";
