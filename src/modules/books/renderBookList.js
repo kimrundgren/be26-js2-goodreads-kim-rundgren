@@ -1,4 +1,4 @@
-import { renderBook } from "./BookItemView.js";
+import { renderBook } from "./renderBook.js";
 
 export function renderBooks(books) {
 	for (const book of books) {
