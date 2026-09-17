@@ -1,0 +1,58 @@
+:root {
+	--black: #181818;
+	--white: #f1f1f1;
+	--light-gray: #fafafa;
+	--purple: #6a45a2;
+	--light-purple: #f0e7fe;
+	--yellow: #ffe028;
+	--red: #dc3545;
+	--green: #30b074;
+}
+
+body {
+	font-family: "Google Sans Flex", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 400;
+	font-style: normal;
+	color: var(--black);
+}
+
+/* Navbar */
+.nav-link {
+	color: var(--black);
+}
+
+.nav-link.active {
+	color: var(--purple);
+}
+
+.nav-link:focus,
+.nav-link:hover {
+	color: var(--purple);
+}
+
+/* Buttons */
+.btn-primary {
+	background-color: var(--purple);
+	border: 1px solid var(--purple);
+}
+
+.btn-primary:hover {
+	background-color: transparent;
+	border-color: var(--purple);
+	color: var(--black);
+}
+
+/* Forms */
+label {
+	font-size: 0.875rem;
+	margin-bottom: 0.25rem;
+}
+.form-group {
+	margin-bottom: 1rem;
+}
+
+/* Modals */
+.modal-footer {
+	border: unset;
+}
