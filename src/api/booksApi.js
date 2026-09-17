@@ -7,7 +7,7 @@ export async function getBooks() {
 		const response = await fetch(url);
 
 		if (!response.ok) {
-			throw new Error("Could not add book");
+			throw new Error("Could not fetch books");
 		}
 
 		const data = await response.json();
@@ -48,6 +48,24 @@ export async function addBook(newBook) {
 		const data = await response.json();
 
 		return data;
+	} catch (error) {
+		throw error;
+	}
+}
+
+export async function deleteBook(id) {
+	const url = `${BASE_URL}/${id}.json`;
+
+	const options = {
+		method: "DELETE"
+	}
+
+	try {
+		const response = await fetch(url, options);
+
+		if (!response.ok) {
+			throw new Error("Could not delete book");
+		}
 	} catch (error) {
 		throw error;
 	}

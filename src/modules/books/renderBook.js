@@ -38,9 +38,10 @@ export function renderBook(book) {
 	const status = renderStatus(isRead);
 
 	const bookList = document.querySelector("#bookList");
-
 	const li = document.createElement("li");
+
 	li.classList.add("row", "align-items-center", "border-bottom", "py-3");
+	li.dataset.id = book.getId();
 
 	li.innerHTML = `
 		<div class="col-3">
@@ -69,8 +70,8 @@ export function renderBook(book) {
 
 		<div class="col-2 text-end">
 			<div class="actions">
-				<button class="btn btn-sm btn-outline-dark">Edit</button>
-				<button class="btn btn-sm btn-outline-danger">Remove</button>
+				<button class="btn btn-sm btn-outline-dark edit">Edit</button>
+				<button class="btn btn-sm btn-outline-danger delete">Delete</button>
 			</div>
 		</div>
 	`;
