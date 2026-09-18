@@ -70,3 +70,29 @@ export async function deleteBook(id) {
 		throw error;
 	}
 }
+
+export async function updateBook(id, updates) {
+	const url = `${BASE_URL}/${id}.json`;
+
+	const options = {
+		method: "PATCH",
+		body: JSON.stringify(updates),
+		headers: {
+			"Content-type": "application/json"
+		}
+	}
+
+	try {
+		const response = await fetch(url, options);
+
+		if (!response.ok) {
+			throw new Error("Could not update book");
+		}
+
+		const data = await response.json();
+
+		return data;
+	} catch (error) {
+		throw error;
+	}
+}
