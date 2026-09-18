@@ -19,11 +19,13 @@
 }
 
 /* Edit form */
-#editReadStatus .btn {
+#editReadStatus .btn,
+#editScore .btn {
 	border-color: var(--black);
 }
 
-#editReadStatus:not(:checked) label {
+#editReadStatus:not(:checked) label,
+#editScore:not(:checked) label {
 	color: inherit;
 }
 
@@ -38,5 +40,12 @@
 #markAsUnread:hover + label {
 	background-color: var(--red);
 	border-color: var(--red);
+	color: var(--white);
+}
+
+#editScore :checked + label,
+#editScore :hover + label {
+	background-color: var(--black);
+	border-color: var(--black);
 	color: var(--white);
 }

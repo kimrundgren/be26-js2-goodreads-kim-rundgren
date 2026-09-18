@@ -32,12 +32,20 @@ function renderStatus(isRead) {
 
 export function updateReadStatus(book, element) {
 	const status = renderStatus(book.getIsRead());
-	const badge = element.querySelector(".badge-status");
+	const badgeEl = element.querySelector(".badge-status");
 
-	badge.textContent = status.statusString;
+	badgeEl.textContent = status.statusString;
 
-	badge.classList.remove("read", "not-read");
-	badge.classList.add(status.statusClass);
+	badgeEl.classList.remove("read", "not-read");
+	badgeEl.classList.add(status.statusClass);
+}
+
+export function updateScore(book, element) {
+	const score = book.getScore();
+	const scoreDisplay = renderScore(score);
+	const scoreEl = element.querySelector(".stars");
+
+	scoreEl.textContent = scoreDisplay;
 }
 
 export function renderBook(book) {

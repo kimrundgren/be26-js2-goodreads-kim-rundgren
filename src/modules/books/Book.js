@@ -41,6 +41,10 @@ export class Book {
 		return this.#score;
 	}
 
+	setScore(score) {
+		this.#score = score;
+	}
+
 	getIsRead() {
 		return this.#isRead;
 	}

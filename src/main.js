@@ -1,13 +1,15 @@
 import { getBooks, addBook, deleteBook, updateBook } from "./api/booksApi.js";
 import { Book } from "./modules/books/Book.js";
 import { renderBooks } from "./modules/books/renderBookList.js";
-import { renderBook, updateReadStatus } from "./modules/books/renderBook.js";
+import { renderBook, updateReadStatus, updateScore } from "./modules/books/renderBook.js";
 
 const bookList = document.querySelector("#bookList");
 const addBookForm = document.querySelector("#addBookForm");
 const editBookForm = document.querySelector("#editBookForm");
 const markAsRead = document.querySelector("#markAsRead");
 const markAsUnread = document.querySelector("#markAsUnread");
+const scoreBtns = document.querySelectorAll("input[name='score']");
+const editScore = document.querySelector("#editScore");
 
 const books = [];
 let editingBook;
@@ -95,27 +97,48 @@ bookList.addEventListener("click", event => {
 		const isRead = editingBook.getIsRead();
 		const score = editingBook.getScore();
 
+		scoreBtns.forEach(btn => {
+			btn.checked = false;
+		});
+
 		if (isRead) {
 			markAsRead.checked = true;
+			editScore.hidden = false;
+
+			if (score !== null) {
+				document.querySelector(`#score${score}`).checked = true;
+			}
 		} else {
 			markAsUnread.checked = true;
+			editScore.hidden = true;
 		}
 	}
 });
 
 markAsRead.addEventListener("click", () => {
 	editingBook.markAsRead();
+	editScore.hidden = false;
 });
 
 markAsUnread.addEventListener("click", () => {
 	editingBook.markAsUnread();
+	editingBook.setScore(null);
+
+	editScore.hidden = true;
+});
+
+scoreBtns.forEach(btn => {
+	btn.addEventListener("click", () => {
+		editingBook.setScore(Number(btn.value));
+	});
 });
 
 editBookForm.addEventListener("submit", event => {
 	event.preventDefault();
 
 	const updates = {
-		isRead: editingBook.getIsRead()
+		isRead: editingBook.getIsRead(),
+		score: editingBook.getScore()
 	};
 
 	updateBook(editingBook.getId(), updates)
@@ -123,6 +146,7 @@ editBookForm.addEventListener("submit", event => {
 			const element = bookList.querySelector(`li[data-id="${editingBook.getId()}"]`);
 
 			updateReadStatus(editingBook, element);
+			updateScore(editingBook, element);
 		})
 		.catch(error => console.log(error));
 });
