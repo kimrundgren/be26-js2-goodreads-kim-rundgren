@@ -44,4 +44,12 @@ export class Book {
 	getIsRead() {
 		return this.#isRead;
 	}
+
+	markAsRead() {
+		this.#isRead = true;
+	}
+
+	markAsUnread() {
+		this.#isRead = false;
+	}
 }

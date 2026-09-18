@@ -30,6 +30,16 @@ function renderStatus(isRead) {
 	};
 }
 
+export function updateReadStatus(book, element) {
+	const status = renderStatus(book.getIsRead());
+	const badge = element.querySelector(".badge-status");
+
+	badge.textContent = status.statusString;
+
+	badge.classList.remove("read", "not-read");
+	badge.classList.add(status.statusClass);
+}
+
 export function renderBook(book) {
 	const score = book.getScore();
 	const scoreDisplay = renderScore(score);

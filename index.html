@@ -21,7 +21,7 @@
 			<div class="d-flex align-items-center gap-4">
 
 				<a href="/" class="navbar-brand d-flex align-items-center link-body-emphasis text-decoration-none gap-3">
-					<img src="./public/book-nook-logo-purple.png" alt="Thin lined open book on solid black background" height="32" width="32">
+					<img src="/book-nook-logo-purple.png" alt="Thin lined open book on solid black background" height="32" width="32">
 					<span class="fs-5">The Book Nook</span>
 				</a>
 
@@ -164,30 +164,15 @@
 							<input type="url" name="editBookCover" class="form-control form-control-plaintext" id="editBookCover" readonly>
 						</div>
 						<div class="form-group">
-							<label for="editBookStatus">Read status:</label>
+							<legend class="form-label small">Read status:</legend>
+							<div class="btn-group w-100" role="group" id="editReadStatus" aria-label="Read status">
+								<input type="radio" class="btn-check" name="readStatus" id="markAsUnread" autocomplete="off">
+								<label class="btn btn-outline-primary" for="markAsUnread">Not read</label>
 
-							<input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" autocomplete="off">
-							<label class="btn btn-outline-danger" for="danger-outlined">Not read</label>
-
-							<input type="radio" class="btn-check" name="options-outlined" id="success-outlined" autocomplete="off" checked>
-							<label class="btn btn-outline-success" for="success-outlined">Read</label>
+								<input type="radio" class="btn-check" name="readStatus" id="markAsRead" autocomplete="off">
+								<label class="btn btn-outline-primary" for="markAsRead">Read</label>
+							</div>
 						</div>
-						<!-- <div class="form-group">
-							<label for="editBookScore">Rating:</label>
-							<input type="text" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" class="form-control" id="editBookScore" name="editBookScore">
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
-								<label class="form-check-label" for="inlineRadio1">1</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-								<label class="form-check-label" for="inlineRadio2">2</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-								<label class="form-check-label" for="inlineRadio3">3</label>
-							</div>
-						</div>-->
 
 						<div class="modal-footer">
 							<button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal" aria-label="Cancel">Cancel</button>

@@ -17,3 +17,26 @@
 	display: inline-flex;
 	gap: 8px;
 }
+
+/* Edit form */
+#editReadStatus .btn {
+	border-color: var(--black);
+}
+
+#editReadStatus:not(:checked) label {
+	color: inherit;
+}
+
+#markAsRead:checked + label,
+#markAsRead:hover + label {
+	background-color: var(--green);
+	border-color: var(--green);
+	color: var(--white);
+}
+
+#markAsUnread:checked + label,
+#markAsUnread:hover + label {
+	background-color: var(--red);
+	border-color: var(--red);
+	color: var(--white);
+}

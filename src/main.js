@@ -1,12 +1,16 @@
-import { getBooks, addBook, deleteBook } from "./api/booksApi.js";
+import { getBooks, addBook, deleteBook, updateBook } from "./api/booksApi.js";
 import { Book } from "./modules/books/Book.js";
 import { renderBooks } from "./modules/books/renderBookList.js";
-import { renderBook } from "./modules/books/renderBook.js";
+import { renderBook, updateReadStatus } from "./modules/books/renderBook.js";
+
+const bookList = document.querySelector("#bookList");
+const addBookForm = document.querySelector("#addBookForm");
+const editBookForm = document.querySelector("#editBookForm");
+const markAsRead = document.querySelector("#markAsRead");
+const markAsUnread = document.querySelector("#markAsUnread");
 
 const books = [];
-
-const addBookForm = document.querySelector("#addBookForm");
-const bookList = document.querySelector("#bookList");
+let editingBook;
 
 getBooks()
 	.then(data => {
@@ -38,7 +42,7 @@ addBookForm.addEventListener("submit", event => {
 		author: formData.get("bookAuthor"),
 		year: formData.get("bookYear"),
 		cover: formData.get("bookCover")
-	}
+	};
 
 	addBook(newBook)
 		.then(data => {
@@ -79,12 +83,46 @@ bookList.addEventListener("click", event => {
 		const li = event.target.closest("li");
 		const id = li.dataset.id;
 
-		const book = books.find(book => book.getId() === id);
+		// Find book
+		editingBook = books.find(book => book.getId() === id);
 
-		// hämta readonlyfält, lägg till values med getters
-		editBookTitle.value = book.getTitle();
-		editBookAuthor.value = book.getAuthor();
-		editBookYear.value = book.getYear();
-		editBookCover.value = book.getCover();
+		// Add values to readonly inputs
+		editBookTitle.value = editingBook.getTitle();
+		editBookAuthor.value = editingBook.getAuthor();
+		editBookYear.value = editingBook.getYear();
+		editBookCover.value = editingBook.getCover();
+
+		const isRead = editingBook.getIsRead();
+		const score = editingBook.getScore();
+
+		if (isRead) {
+			markAsRead.checked = true;
+		} else {
+			markAsUnread.checked = true;
+		}
 	}
+});
+
+markAsRead.addEventListener("click", () => {
+	editingBook.markAsRead();
+});
+
+markAsUnread.addEventListener("click", () => {
+	editingBook.markAsUnread();
+});
+
+editBookForm.addEventListener("submit", event => {
+	event.preventDefault();
+
+	const updates = {
+		isRead: editingBook.getIsRead()
+	};
+
+	updateBook(editingBook.getId(), updates)
+		.then(() => {
+			const element = bookList.querySelector(`li[data-id="${editingBook.getId()}"]`);
+
+			updateReadStatus(editingBook, element);
+		})
+		.catch(error => console.log(error));
 });
