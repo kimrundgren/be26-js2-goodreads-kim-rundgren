@@ -1,10 +1,6 @@
 import "./books.css";
 
 function renderScore(score) {
-	if (score === 0) {
-		return "☆☆☆☆☆";
-	}
-
 	if (score >= 1 && score <= 5) {
 		return "★".repeat(score) + "☆".repeat(5 - score);
 	}
@@ -13,47 +9,31 @@ function renderScore(score) {
 }
 
 function renderStatus(isRead) {
-	let statusString;
-	let statusClass;
-
-	if (isRead) {
-		statusString = "Read";
-		statusClass = "read";
-	} else {
-		statusString = "Not read";
-		statusClass = "not-read";
-	}
-
 	return {
-		statusString,
-		statusClass
+		statusString: isRead ? "Read" : "Not read",
+		statusClass: isRead ? "read" : "not-read"
 	};
 }
 
 export function updateReadStatus(book, element) {
 	const status = renderStatus(book.getIsRead());
-	const badgeEl = element.querySelector(".badge-status");
+	const badgeElement = element.querySelector(".badge-status");
 
-	badgeEl.textContent = status.statusString;
-
-	badgeEl.classList.remove("read", "not-read");
-	badgeEl.classList.add(status.statusClass);
+	badgeElement.textContent = status.statusString;
+	badgeElement.classList.remove("read", "not-read");
+	badgeElement.classList.add(status.statusClass);
 }
 
 export function updateScore(book, element) {
-	const score = book.getScore();
-	const scoreDisplay = renderScore(score);
-	const scoreEl = element.querySelector(".stars");
+	const score = renderScore(book.getScore());
+	const scoreElement = element.querySelector(".stars");
 
-	scoreEl.textContent = scoreDisplay;
+	scoreElement.textContent = score;
 }
 
 export function renderBook(book) {
-	const score = book.getScore();
-	const scoreDisplay = renderScore(score);
-
-	const isRead = book.getIsRead();
-	const status = renderStatus(isRead);
+	const score = renderScore(book.getScore());
+	const status = renderStatus(book.getIsRead());
 
 	const bookList = document.querySelector("#bookList");
 	const li = document.createElement("li");
@@ -62,14 +42,14 @@ export function renderBook(book) {
 	li.dataset.id = book.getId();
 
 	li.innerHTML = `
-		<div class="col-3">
+		<div class="col-3 d-flex gap-3 align-items-center">
 			<img 
 				src="${book.getCover()}" 
 				alt="Book cover of ${book.getTitle()} by ${book.getAuthor()}" 
 				height="50" 
 				width="auto"
-			><div>
-			${book.getTitle()} <span>${book.getYear()}</span></div>
+			>
+			<div>${book.getTitle()} <span>(${book.getYear()})</span></div>
 		</div>
 
 		<div class="col-3">
@@ -77,7 +57,7 @@ export function renderBook(book) {
 		</div>
 
 		<div class="col-2">
-			<span class="stars">${scoreDisplay}</span>
+			<span class="stars">${score}</span>
 		</div>
 
 		<div class="col-2">

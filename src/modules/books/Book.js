@@ -7,7 +7,7 @@ export class Book {
 	#score;
 	#isRead;
 
-	constructor(id, title, author, year, cover, score, isRead) {
+	constructor({ id, title, author, year, cover, score = null, isRead = false }) {
 		this.#id = id;
 		this.#title = title;
 		this.#author = author;

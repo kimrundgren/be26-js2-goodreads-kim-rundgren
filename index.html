@@ -19,7 +19,6 @@
 	<header class="border-bottom">
 		<nav class="container py-3 px-0">
 			<div class="d-flex align-items-center gap-4">
-
 				<a href="/" class="navbar-brand d-flex align-items-center link-body-emphasis text-decoration-none gap-3">
 					<img src="/book-nook-logo-purple.png" alt="Thin lined open book on solid black background" height="32" width="32">
 					<span class="fs-5">The Book Nook</span>
@@ -61,17 +60,17 @@
 			<h1 class="fs-2 mb-4">My books</h1>
 
 			<div class="d-flex justify-content-between align-items-center mb-5">
-				<div class="d-flex gap-2">
-					<button type="button" class="btn btn-dark">
+				<div class="d-flex gap-2" id="filterButtons">
+					<button type="button" class="btn btn-dark" data-filter="all">
 						All
 						<span class="badge badge-secondary"></span>
 					</button>
-					<button type="button" class="btn btn-outline-dark">
-						Not read
+					<button type="button" class="btn btn-outline-dark" data-filter="read">
+						Read
 						<span class="badge badge-secondary"></span>
 					</button>
-					<button type="button" class="btn btn-outline-dark">
-						Read
+					<button type="button" class="btn btn-outline-dark" data-filter="unread">
+						Not read
 						<span class="badge badge-secondary"></span>
 					</button>
 				</div>
@@ -166,19 +165,16 @@
 						<div class="form-group">
 							<legend class="form-label small">Read status:</legend>
 							<div class="btn-group w-100" role="group" id="editReadStatus" aria-label="Read status">
-								<input type="radio" class="btn-check" name="readStatus" id="markAsUnread" autocomplete="off">
+								<input type="radio" class="btn-check" name="readStatus" id="markAsUnread" value="unread">
 								<label class="btn btn-outline-primary" for="markAsUnread">Not read</label>
 
-								<input type="radio" class="btn-check" name="readStatus" id="markAsRead" autocomplete="off">
+								<input type="radio" class="btn-check" name="readStatus" id="markAsRead" value="read">
 								<label class="btn btn-outline-primary" for="markAsRead">Read</label>
 							</div>
 						</div>
 						<div class="form-group" id="editScore">
 							<legend class="form-label small">Score:</legend>
 							<div class="btn-group w-100" role="group" aria-label="Rating">
-								<input type="radio" class="btn-check" name="score" id="score0" value="0">
-								<label class="btn btn-outline-primary" for="score0">0</label>
-
 								<input type="radio" class="btn-check" name="score" id="score1" value="1">
 								<label class="btn btn-outline-primary" for="score1">1</label>
 
