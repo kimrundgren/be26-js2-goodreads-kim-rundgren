@@ -1,7 +1,11 @@
-import { renderBook } from "./renderBook.js";
+import { createBookItem } from "./createBookItem.js";
 
-export function renderBooks(books) {
+export function renderBookList(books) {
+	const bookList = document.querySelector("#bookList");
+
 	for (const book of books) {
-		renderBook(book);
+		const bookItem = createBookItem(book);
+
+		bookList.append(bookItem);
 	}
 }

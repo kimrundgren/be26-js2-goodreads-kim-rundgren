@@ -42,6 +42,19 @@ export class Book {
 	}
 
 	setScore(score) {
+		if (score === null) {
+			this.#score = null;
+			return;
+		}
+
+		if (!this.#isRead) {
+			throw new Error("Only read books can be rated");
+		}
+
+		if (!Number.isInteger(score) || score < 1 || score > 5) {
+			throw new Error("Score must be an integer between 1 and 5");
+		}
+
 		this.#score = score;
 	}
 
@@ -49,11 +62,15 @@ export class Book {
 		return this.#isRead;
 	}
 
-	markAsRead() {
-		this.#isRead = true;
-	}
+	setIsRead(isRead) {
+		if (typeof isRead !== "boolean") {
+			throw new Error("isRead must be true or false");
+		}
 
-	markAsUnread() {
-		this.#isRead = false;
+		this.#isRead = isRead;
+
+		if (!isRead) {
+			this.#score = null;
+		}
 	}
 }

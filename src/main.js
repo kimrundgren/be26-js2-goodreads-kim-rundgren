@@ -1,14 +1,14 @@
 import { getBooks, addBook, deleteBook, updateBook } from "./api/booksApi.js";
 import { Book } from "./modules/books/Book.js";
-import { renderBooks } from "./modules/books/renderBookList.js";
+import { renderBookList } from "./modules/books/renderBookList.js";
 
 /**
  * HTML elements
  */
 
-const filterButtons = document.querySelector("#filterButtons");
-
 const bookList = document.querySelector("#bookList");
+
+const filterButtons = document.querySelector("#filterButtons");
 
 const addBookForm = document.querySelector("#addBookForm");
 const editBookForm = document.querySelector("#editBookForm");
@@ -32,14 +32,14 @@ const editBookModal = document.querySelector("#editBookModal");
  */
 
 const books = [];
-let bookToEdit;
+let bookToEdit = null;
 let currentFilter = "all";
 
 getBooks()
 	.then(data => {
 		for (const id in data) {
 			const book = new Book({
-				id: id,
+				id,
 				title: data[id].title,
 				author: data[id].author,
 				year: data[id].year,
@@ -51,7 +51,7 @@ getBooks()
 			books.push(book);
 		}
 
-		renderBooks(books);
+		renderBookList(books);
 	})
 	.catch(error => console.error(error));
 
@@ -60,15 +60,13 @@ function renderFilteredBooks() {
 
 	if (currentFilter === "read") {
 		filteredBooks = books.filter(book => book.getIsRead());
-	}
-
-	if (currentFilter === "unread") {
+	} else if (currentFilter === "unread") {
 		filteredBooks = books.filter(book => !book.getIsRead());
 	}
 
 	bookList.querySelectorAll("li[data-id]").forEach(book => book.remove());
 
-	renderBooks(filteredBooks);
+	renderBookList(filteredBooks);
 }
 
 addBookForm.addEventListener("submit", event => {
@@ -90,7 +88,9 @@ addBookForm.addEventListener("submit", event => {
 				title: newBook.title,
 				author: newBook.author,
 				year: newBook.year,
-				cover: newBook.cover
+				cover: newBook.cover,
+				score: null,
+				isRead: false
 			});
 
 			books.push(book);
@@ -98,6 +98,7 @@ addBookForm.addEventListener("submit", event => {
 
 			addBookForm.reset();
 
+			// Hide add book modal on submit
 			bootstrap.Modal.getInstance(addBookModal).hide();
 		})
 		.catch(error => console.error(error));
@@ -122,10 +123,8 @@ bookList.addEventListener("click", event => {
 		const li = event.target.closest("li");
 		const id = li.dataset.id;
 
-		// Find book
 		bookToEdit = books.find(book => book.getId() === id);
 
-		// Add values to readonly inputs
 		editTitleInput.value = bookToEdit.getTitle();
 		editAuthorInput.value = bookToEdit.getAuthor();
 		editYearInput.value = bookToEdit.getYear();
@@ -170,23 +169,18 @@ editBookForm.addEventListener("submit", event => {
 	const formData = new FormData(editBookForm);
 
 	const isRead = formData.get("readStatus") === "read";
-
 	const scoreValue = formData.get("score");
+
 	const score = scoreValue !== null ? Number(scoreValue) : null;
 
 	const updates = {
-		isRead: isRead,
-		score: score
+		isRead,
+		score
 	};
 
 	updateBook(bookToEdit.getId(), updates)
 		.then(() => {
-			if (isRead) {
-				bookToEdit.markAsRead();
-			} else {
-				bookToEdit.markAsUnread();
-			}
-
+			bookToEdit.setIsRead(isRead);
 			bookToEdit.setScore(score);
 
 			renderFilteredBooks();
