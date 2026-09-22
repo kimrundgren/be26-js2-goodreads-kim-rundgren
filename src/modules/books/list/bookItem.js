@@ -1,4 +1,3 @@
-import "./books.css";
 
 function formatScore(score) {
 	if (score >= 1 && score <= 5) {
@@ -44,7 +43,7 @@ export function createBookItem(book) {
 
 		<div class="col-2">
 			<span class="badge badge-status ${status.class}">
-			${status.label}
+				${status.label}
 			</span>
 		</div>
 
