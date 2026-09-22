@@ -14,6 +14,7 @@ export async function getBooks() {
 
 		return data;
 	} catch (error) {
+		console.error("getBooks failed:", error.message);
 		throw error;
 	}
 }
@@ -36,7 +37,7 @@ export async function addBook(newBook) {
 		headers: {
 			"Content-type": "application/json"
 		}
-	}
+	};
 
 	try {
 		const response = await fetch(url, options);
@@ -49,6 +50,7 @@ export async function addBook(newBook) {
 
 		return data;
 	} catch (error) {
+		console.error("addBook failed:", error.message);
 		throw error;
 	}
 }
@@ -58,7 +60,7 @@ export async function deleteBook(id) {
 
 	const options = {
 		method: "DELETE"
-	}
+	};
 
 	try {
 		const response = await fetch(url, options);
@@ -67,6 +69,7 @@ export async function deleteBook(id) {
 			throw new Error("Could not delete book");
 		}
 	} catch (error) {
+		console.error("deleteBook failed:", error.message);
 		throw error;
 	}
 }
@@ -80,7 +83,7 @@ export async function updateBook(id, updates) {
 		headers: {
 			"Content-type": "application/json"
 		}
-	}
+	};
 
 	try {
 		const response = await fetch(url, options);
@@ -93,6 +96,7 @@ export async function updateBook(id, updates) {
 
 		return data;
 	} catch (error) {
+		console.error("updateBook failed:", error.message);
 		throw error;
 	}
 }
