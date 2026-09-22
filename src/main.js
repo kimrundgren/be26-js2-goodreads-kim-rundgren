@@ -1,194 +1,142 @@
-import { getBooks, addBook, deleteBook, updateBook } from "./api/booksApi.js";
-import { Book } from "./modules/books/Book.js";
-import { renderBookList } from "./modules/books/renderBookList.js";
+import "./modules/books/books.css";
 
-/**
- * HTML elements
- */
-
-const bookList = document.querySelector("#bookList");
-
-const filterButtons = document.querySelector("#filterButtons");
-
-const addBookForm = document.querySelector("#addBookForm");
-const editBookForm = document.querySelector("#editBookForm");
-
-const editTitleInput = document.querySelector("#editBookTitle");
-const editAuthorInput = document.querySelector("#editBookAuthor");
-const editYearInput = document.querySelector("#editBookYear");
-const editCoverInput = document.querySelector("#editBookCover");
-
-const statusReadRadio = document.querySelector("#markAsRead");
-const statusUnreadRadio = document.querySelector("#markAsUnread");
-
-const scoreContainer = document.querySelector("#editScore");
-const scoreButtons = document.querySelectorAll("input[name='score']");
-
-const addBookModal = document.querySelector("#addBookModal");
-const editBookModal = document.querySelector("#editBookModal");
+import { getBooks, addBook, updateBook, deleteBook } from "./api/booksApi.js";
+import { createBookFromData, createBooksFromData } from "./modules/books/bookData.js";
+import { renderBookList } from "./modules/books/list/bookList.js";
+import { filterBooks } from "./modules/books/list/bookFilter.js";
+import { getNewBookData } from "./modules/books/forms/addBookForm.js";
+import { getEditBookData, populateEditForm, setupReadStatus } from "./modules/books/forms/editBookForm.js";
 
 /**
  * States
  */
 
 const books = [];
-let bookToEdit = null;
 let currentFilter = "all";
+let bookToEdit = null;
+
+/**
+ * HTML elements
+ */
+
+const bookList = document.querySelector("#bookList");
+const filterButtons = document.querySelector("#filterButtons");
+const addBookForm = document.querySelector("#addBookForm");
+const editBookForm = document.querySelector("#editBookForm");
+const addBookModal = document.querySelector("#addBookModal");
+const editBookModal = document.querySelector("#editBookModal");
+
+/**
+ * Helper functions 
+ */
+
+function handleEdit(id) {
+	bookToEdit = books.find(book => book.getId() === id);
+
+	populateEditForm(editBookForm, bookToEdit);
+}
+
+function handleDelete(id) {
+	deleteBook(id)
+		.then(() => {
+			const index = books.findIndex(book => book.getId() === id);
+			books.splice(index, 1);
+
+			const filteredBooks = filterBooks(books, currentFilter);
+			renderBookList(filteredBooks);
+		})
+		.catch(error => console.error(error));
+}
+
+/**
+ * Load books
+ */
 
 getBooks()
 	.then(data => {
-		for (const id in data) {
-			const book = new Book({
-				id,
-				title: data[id].title,
-				author: data[id].author,
-				year: data[id].year,
-				cover: data[id].cover,
-				score: data[id].score,
-				isRead: data[id].isRead
-			});
-
-			books.push(book);
-		}
+		books.push(...createBooksFromData(data));
 
 		renderBookList(books);
 	})
 	.catch(error => console.error(error));
 
-function renderFilteredBooks() {
-	let filteredBooks = books;
-
-	if (currentFilter === "read") {
-		filteredBooks = books.filter(book => book.getIsRead());
-	} else if (currentFilter === "unread") {
-		filteredBooks = books.filter(book => !book.getIsRead());
-	}
-
-	bookList.querySelectorAll("li[data-id]").forEach(book => book.remove());
-
-	renderBookList(filteredBooks);
-}
+/**
+* Add book
+*/
 
 addBookForm.addEventListener("submit", event => {
 	event.preventDefault();
 
-	const formData = new FormData(addBookForm);
-
-	const newBook = {
-		title: formData.get("bookTitle"),
-		author: formData.get("bookAuthor"),
-		year: formData.get("bookYear"),
-		cover: formData.get("bookCover")
-	};
+	const newBook = getNewBookData(addBookForm);
 
 	addBook(newBook)
 		.then(data => {
-			const book = new Book({
-				id: data.name,
-				title: newBook.title,
-				author: newBook.author,
-				year: newBook.year,
-				cover: newBook.cover,
-				score: null,
-				isRead: false
-			});
+			const book = createBookFromData(data.name, newBook);
 
 			books.push(book);
-			renderFilteredBooks();
+
+			const filteredBooks = filterBooks(books, currentFilter);
+			renderBookList(filteredBooks);
 
 			addBookForm.reset();
-
-			// Hide add book modal on submit
 			bootstrap.Modal.getInstance(addBookModal).hide();
 		})
 		.catch(error => console.error(error));
 });
 
-bookList.addEventListener("click", event => {
-	if (event.target.classList.contains("delete")) {
-		const li = event.target.closest("li");
-		const id = li.dataset.id;
-
-		deleteBook(id)
-			.then(() => {
-				const index = books.findIndex(book => book.getId() === id);
-				books.splice(index, 1);
-
-				li.remove();
-			})
-			.catch(error => console.error(error));
-	}
-
-	if (event.target.classList.contains("edit")) {
-		const li = event.target.closest("li");
-		const id = li.dataset.id;
-
-		bookToEdit = books.find(book => book.getId() === id);
-
-		editTitleInput.value = bookToEdit.getTitle();
-		editAuthorInput.value = bookToEdit.getAuthor();
-		editYearInput.value = bookToEdit.getYear();
-		editCoverInput.value = bookToEdit.getCover();
-
-		const isRead = bookToEdit.getIsRead();
-		const score = bookToEdit.getScore();
-
-		scoreButtons.forEach(button => {
-			button.checked = false;
-		});
-
-		if (isRead) {
-			statusReadRadio.checked = true;
-			scoreContainer.hidden = false;
-
-			if (score !== null) {
-				document.querySelector(`#score${score}`).checked = true;
-			}
-		} else {
-			statusUnreadRadio.checked = true;
-			scoreContainer.hidden = true;
-		}
-	}
-});
-
-statusReadRadio.addEventListener("change", () => {
-	scoreContainer.hidden = false;
-});
-
-statusUnreadRadio.addEventListener("change", () => {
-	scoreContainer.hidden = true;
-
-	scoreButtons.forEach(button => {
-		button.checked = false;
-	});
-});
+/**
+ * Edit book
+ */
 
 editBookForm.addEventListener("submit", event => {
 	event.preventDefault();
 
-	const formData = new FormData(editBookForm);
+	const editData = getEditBookData(editBookForm);
 
-	const isRead = formData.get("readStatus") === "read";
-	const scoreValue = formData.get("score");
-
-	const score = scoreValue !== null ? Number(scoreValue) : null;
-
-	const updates = {
-		isRead,
-		score
-	};
-
-	updateBook(bookToEdit.getId(), updates)
+	updateBook(bookToEdit.getId(), editData)
 		.then(() => {
-			bookToEdit.setIsRead(isRead);
-			bookToEdit.setScore(score);
+			bookToEdit.setIsRead(editData.isRead);
+			bookToEdit.setScore(editData.score);
 
-			renderFilteredBooks();
+			const filteredBooks = filterBooks(books, currentFilter);
+			renderBookList(filteredBooks);
 
 			bootstrap.Modal.getInstance(editBookModal).hide();
 		})
 		.catch(error => console.error(error));
 });
+
+/**
+ * Edit form
+ */
+
+setupReadStatus(editBookForm);
+
+/**
+ * Book actions
+ */
+
+bookList.addEventListener("click", event => {
+	const li = event.target.closest("li");
+
+	if (!li) {
+		return;
+	}
+
+	const id = li.dataset.id;
+
+	if (event.target.classList.contains("edit")) {
+		handleEdit(id);
+	}
+
+	if (event.target.classList.contains("delete")) {
+		handleDelete(id);
+	}
+});
+
+/**
+ * Filter books
+ */
 
 filterButtons.addEventListener("click", event => {
 	const filter = event.target.dataset.filter;
@@ -200,12 +148,11 @@ filterButtons.addEventListener("click", event => {
 	currentFilter = filter;
 
 	filterButtons.querySelectorAll("button").forEach(button => {
-		button.classList.remove("btn-dark");
-		button.classList.add("btn-outline-dark");
+		button.classList.replace("btn-dark", "btn-outline-dark");
 	});
 
-	event.target.classList.remove("btn-outline-dark");
-	event.target.classList.add("btn-dark");
+	event.target.classList.replace("btn-outline-dark", "btn-dark");
 
-	renderFilteredBooks();
+	const filteredBooks = filterBooks(books, currentFilter);
+	renderBookList(filteredBooks);
 });
